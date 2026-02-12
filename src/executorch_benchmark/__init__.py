@@ -1,5 +1,5 @@
 import executorch.extension.pybindings._portable_lib  # noqa: F401
-from asyncio import sleep
+from asyncio import sleep, to_thread
 from executorch.extension.llm.runner import MultimodalRunner, GenerationConfig
 from transformers import AutoProcessor
 from http import HTTPStatus
@@ -20,36 +20,12 @@ from vllm.entrypoints.openai.engine.protocol import (
 )
 
 
-def main() -> None:
-    processor = AutoProcessor.from_pretrained("google/gemma-3-4b-it")
+processor = AutoProcessor.from_pretrained("google/gemma-3-4b-it")
 
-    runner = MultimodalRunner(
-        model_path="models/gemma-3-4b-it/model.pte",
-        tokenizer_path="models/gemma-3-4b-it/tokenizer.json",
-    )
-
-    conversation = [
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": "Hello, who is this?"},
-            ],
-        }
-    ]
-
-    # Apply chat template and process
-    prompt = processor.apply_chat_template(
-        conversation, tokenize=False, add_generation_prompt=True
-    )
-
-    inputs_hf = processor(images=None, text=prompt, return_tensors="pt")
-
-    config = GenerationConfig(max_new_tokens=100, temperature=0.7)
-    runner.generate_hf(
-        inputs_hf,
-        config,
-        token_callback=lambda token: print(token, end="", flush=True),
-    )
+runner = MultimodalRunner(
+    model_path="models/gemma-3-4b-it/model.pte",
+    tokenizer_path="models/gemma-3-4b-it/tokenizer.json",
+)
 
 
 app = FastAPI()
@@ -89,6 +65,26 @@ async def show_available_models(raw_request: Request):
 @with_cancellation
 async def create_completion(request: CompletionRequest, raw_request: Request):
     async def dummy():
+        inputs_hf = processor(
+            images=None,
+            text=request.prompt,
+            return_tensors="pt",
+        )
+
+        config = GenerationConfig(
+            max_new_tokens=request.max_tokens,
+            temperature=0.7,
+        )
+
+        await to_thread(
+            runner.generate_hf,
+            inputs_hf,
+            config,
+            None,
+            lambda token: print(token, end="", flush=True),
+            None,
+        )
+
         for i in range(10):
             choice_data = CompletionResponseStreamChoice(index=0, text="dummy")
             chunk = CompletionStreamResponse(
