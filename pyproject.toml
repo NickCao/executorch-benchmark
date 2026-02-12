@@ -9,14 +9,30 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "executorch>=1.2.0.dev20260212",
+    "torch>=2.10.0",
+    "transformers==5.0.0rc1",
 ]
 
 [project.scripts]
 executorch-benchmark = "executorch_benchmark:main"
 
 [[tool.uv.index]]
+name = "pytorch-nightly"
 url = "https://download.pytorch.org/whl/nightly"
+explicit = true
+
+[tool.uv.sources]
+executorch = [ { index = "pytorch-nightly" } ]
 
 [build-system]
 requires = ["uv_build>=0.10.0,<0.11.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "huggingface-hub>=1.4.1",
+    "optimum>=2.0.0",
+    "optimum-executorch>=1.1.0",
+    "pillow>=12.1.1",
+    "torchao>=0.16.0",
+]
