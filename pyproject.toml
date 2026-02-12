@@ -11,10 +11,17 @@ dependencies = [
     "executorch>=1.2.0.dev20260212",
     "torch>=2.10.0",
     "transformers==5.0.0rc1",
+    "vllm==0.15.1",
 ]
 
 [project.scripts]
 executorch-benchmark = "executorch_benchmark:main"
+
+[tool.uv]
+override-dependencies = [
+    "transformers==5.0.0rc1",
+    "torch>=2.10.0",
+]
 
 [[tool.uv.index]]
 name = "pytorch-nightly"
