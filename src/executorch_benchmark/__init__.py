@@ -1,5 +1,5 @@
 import executorch.extension.pybindings._portable_lib  # noqa: F401
-from asyncio import sleep, to_thread
+from asyncio import to_thread, Queue, QueueShutDown
 from executorch.extension.llm.runner import MultimodalRunner, GenerationConfig
 from transformers import AutoProcessor
 from http import HTTPStatus
@@ -76,23 +76,31 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
             temperature=0.7,
         )
 
-        await to_thread(
-            runner.generate_hf,
-            inputs_hf,
-            config,
-            None,
-            lambda token: print(token, end="", flush=True),
-            None,
-        )
+        queue = Queue(1024)
 
-        for i in range(10):
-            choice_data = CompletionResponseStreamChoice(index=0, text="dummy")
-            chunk = CompletionStreamResponse(
-                model="google/gemma-3-4b-it",
-                choices=[choice_data],
+        def generate():
+            runner.generate_hf(
+                inputs=inputs_hf,
+                config=config,
+                token_callback=queue.put_nowait,
             )
-            response_json = chunk.model_dump_json(exclude_unset=False)
-            yield f"data: {response_json}\n\n"
-            await sleep(0.1)
+            queue.shutdown()
+
+        task = to_thread(generate)
+
+        while True:
+            try:
+                text = await queue.get()
+                choice_data = CompletionResponseStreamChoice(index=0, text=text)
+                chunk = CompletionStreamResponse(
+                    model="google/gemma-3-4b-it",
+                    choices=[choice_data],
+                )
+                response_json = chunk.model_dump_json(exclude_unset=False)
+                yield f"data: {response_json}\n\n"
+            except QueueShutDown:
+                break
+
+        await task
 
     return StreamingResponse(content=dummy(), media_type="text/event-stream")
