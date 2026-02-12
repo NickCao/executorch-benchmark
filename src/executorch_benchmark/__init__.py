@@ -1,5 +1,5 @@
 import executorch.extension.pybindings._portable_lib  # noqa: F401
-from asyncio import to_thread, Queue, QueueShutDown
+from asyncio import to_thread, Queue, QueueShutDown, create_task
 from executorch.extension.llm.runner import MultimodalRunner, GenerationConfig
 from transformers import AutoProcessor
 from http import HTTPStatus
@@ -86,7 +86,7 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
             )
             queue.shutdown()
 
-        task = to_thread(generate)
+        task = create_task(to_thread(generate))
 
         while True:
             try:
