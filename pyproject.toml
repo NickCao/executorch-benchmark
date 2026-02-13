@@ -11,7 +11,7 @@ dependencies = [
     "executorch>=1.1.0",
     "fastapi[standard]>=0.129.0",
     "torch>=2.10.0",
-    "torchvision>=0.25.0",
+    "torchvision>=0.24.1",
     "transformers==5.0.0rc1",
     "vllm==0.15.1",
 ]
@@ -21,25 +21,9 @@ executorch-benchmark = "executorch_benchmark:main"
 
 [tool.uv]
 override-dependencies = [
-    "transformers==5.0.0rc1",
     "torch>=2.10.0",
-    "torchvision>=0.25.0",
+    "transformers==5.0.0rc1",
 ]
-
-[[tool.uv.index]]
-name = "pytorch"
-url = "https://download.pytorch.org/whl/cu130"
-explicit = true
-
-[[tool.uv.index]]
-name = "vllm"
-url = "https://wheels.vllm.ai/0.15.1/cu130"
-explicit = true
-
-[tool.uv.sources]
-torch = [ { index = "pytorch" } ]
-torchvision = [ { index = "pytorch" } ]
-vllm = [ { index = "vllm" } ]
 
 [build-system]
 requires = ["uv_build>=0.10.0,<0.11.0"]
