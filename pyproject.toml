@@ -21,6 +21,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "cmake>=4.2.1",
     # "executorch"
     # "optimum>=1.27.0",
     # "optimum-executorch>=0.1.0",
