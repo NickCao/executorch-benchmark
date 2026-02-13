@@ -10,10 +10,7 @@ requires-python = ">=3.13"
 dependencies = [
     "executorch>=1.1.0",
     "fastapi[standard]>=0.129.0",
-    "torch>=2.10.0",
-    "torchvision>=0.24.1",
-    "transformers==5.0.0rc1",
-    "vllm==0.15.1",
+    "vllm>=0.15.1",
 ]
 
 [project.scripts]
@@ -22,7 +19,6 @@ executorch-benchmark = "executorch_benchmark:main"
 [tool.uv]
 override-dependencies = [
     "torch>=2.10.0",
-    "transformers==5.0.0rc1",
 ]
 
 [build-system]
@@ -31,9 +27,8 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-    "huggingface-hub>=1.4.1",
-    "optimum>=2.0.0",
-    "optimum-executorch>=1.1.0",
+    "huggingface-hub>=0.36.2",
+    "optimum>=1.27.0",
+    "optimum-executorch>=0.1.0",
     "pillow>=12.1.1",
-    "torchao>=0.15.0",
 ]
