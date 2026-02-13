@@ -643,8 +643,6 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "cmake" },
-    { name = "huggingface-hub" },
-    { name = "pillow" },
 ]
 
 [package.metadata]
@@ -654,11 +652,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "cmake", specifier = ">=4.2.1" },
-    { name = "huggingface-hub", specifier = ">=0.36.2" },
-    { name = "pillow", specifier = ">=12.1.1" },
-]
+dev = [{ name = "cmake", specifier = ">=4.2.1" }]
 
 [[package]]
 name = "fastapi"
