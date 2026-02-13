@@ -8,7 +8,7 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
-    "executorch>=1.2.0.dev20260212",
+    "executorch>=1.1.0",
     "fastapi[standard]>=0.129.0",
     "torch>=2.10.0",
     "torchvision>=0.25.0",
@@ -27,8 +27,8 @@ override-dependencies = [
 ]
 
 [[tool.uv.index]]
-name = "pytorch-nightly"
-url = "https://download.pytorch.org/whl/nightly"
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu130"
 explicit = true
 
 [[tool.uv.index]]
@@ -37,7 +37,8 @@ url = "https://wheels.vllm.ai/0.15.1/cu130"
 explicit = true
 
 [tool.uv.sources]
-executorch = [ { index = "pytorch-nightly" } ]
+torch = [ { index = "pytorch" } ]
+torchvision = [ { index = "pytorch" } ]
 vllm = [ { index = "vllm" } ]
 
 [build-system]
@@ -50,5 +51,5 @@ dev = [
     "optimum>=2.0.0",
     "optimum-executorch>=1.1.0",
     "pillow>=12.1.1",
-    "torchao>=0.16.0",
+    "torchao>=0.15.0",
 ]
