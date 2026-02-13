@@ -12,5 +12,8 @@ models/gemma-3-4b-it/tokenizer.json:
 serve:
 	./.venv/bin/fastapi dev src/executorch_benchmark
 
+serve-vllm:
+	./.venv/bin/vllm serve google/gemma-3-4b-it
+
 bench:
-	./.venv/bin/vllm bench serve --max-concurrency=1
+	./.venv/bin/vllm bench serve --max-concurrency=1 --random-input-len=512 --num-prompts=10

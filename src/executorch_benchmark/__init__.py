@@ -1,5 +1,5 @@
 import executorch.extension.pybindings._portable_lib  # noqa: F401
-from asyncio import to_thread, Queue, QueueShutDown, create_task
+from asyncio import to_thread, Queue, QueueShutDown, create_task, Semaphore
 from executorch.extension.llm.runner import MultimodalRunner, GenerationConfig
 from transformers import AutoProcessor
 from http import HTTPStatus
@@ -24,8 +24,11 @@ processor = AutoProcessor.from_pretrained("google/gemma-3-4b-it")
 
 runner = MultimodalRunner(
     model_path="models/gemma-3-4b-it/model.pte",
+    data_path="models/gemma-3-4b-it/aoti_cuda_blob.ptd",
     tokenizer_path="models/gemma-3-4b-it/tokenizer.json",
 )
+
+sem = Semaphore(1)
 
 
 app = FastAPI()
@@ -65,6 +68,7 @@ async def show_available_models(raw_request: Request):
 @with_cancellation
 async def create_completion(request: CompletionRequest, raw_request: Request):
     async def dummy():
+        await sem.acquire()
         inputs_hf = processor(
             images=None,
             text=request.prompt,
@@ -85,6 +89,7 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
                 token_callback=queue.put_nowait,
             )
             queue.shutdown()
+            runner.reset()
 
         task = create_task(to_thread(generate))
 
@@ -99,6 +104,7 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
                 response_json = chunk.model_dump_json(exclude_unset=False)
                 yield f"data: {response_json}\n\n"
             except QueueShutDown:
+                sem.release()
                 break
 
         await task
