@@ -10,7 +10,7 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.129.0",
     "torchao>=0.16.0",
-    "transformers>=4.57.6",
+    "transformers==5.0.0rc1",
     "vllm>=0.15.1",
 ]
 
@@ -19,6 +19,9 @@ constraint-dependencies = [
     "torch==2.9.1",
     "torchaudio==2.9.1",
     "torchvision==0.24.1",
+]
+override-dependencies = [
+    "transformers==5.0.0rc1",
 ]
 
 [project.scripts]
