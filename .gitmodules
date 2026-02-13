@@ -1,0 +1,6 @@
+[submodule "thirdparty/executorch"]
+	path = thirdparty/executorch
+	url = https://github.com/pytorch/executorch.git
+[submodule "thirdparty/optimum-executorch"]
+	path = thirdparty/optimum-executorch
+	url = https://github.com/huggingface/optimum-executorch.git
