@@ -837,7 +837,7 @@ requires-dist = [
     { name = "torch", specifier = ">=2.10.0" },
     { name = "torchvision", specifier = ">=0.25.0" },
     { name = "transformers", specifier = "==5.0.0rc1" },
-    { name = "vllm", specifier = "==0.15.1" },
+    { name = "vllm", specifier = "==0.15.1", index = "https://wheels.vllm.ai/0.15.1/cu130" },
 ]
 
 [package.metadata.requires-dev]
@@ -4028,8 +4028,8 @@ wheels = [
 
 [[package]]
 name = "vllm"
-version = "0.15.1"
-source = { registry = "https://pypi.org/simple" }
+version = "0.15.1+cu130"
+source = { registry = "https://wheels.vllm.ai/0.15.1/cu130" }
 dependencies = [
     { name = "aiohttp" },
     { name = "anthropic" },
@@ -4093,8 +4093,8 @@ dependencies = [
     { name = "xgrammar", marker = "platform_machine == 'aarch64' or platform_machine == 'arm64' or platform_machine == 'ppc64le' or platform_machine == 's390x' or platform_machine == 'x86_64'" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e7/62/17dd4b80508b26c1a85db4fd9789d4726d3f36c95856a89419a178dda461/vllm-0.15.1-cp38-abi3-manylinux_2_31_aarch64.whl", hash = "sha256:97bfc79b0c29d242c57b0d395e48d2949a868957587b853deb813a985a41ed6e", size = 461362624, upload-time = "2026-02-05T00:18:12.38Z" },
-    { url = "https://files.pythonhosted.org/packages/19/2a/a8fdb1d71dfb5b67485b1755a2cc2e069e72fccfa1787cc6dadb6b4176e8/vllm-0.15.1-cp38-abi3-manylinux_2_31_x86_64.whl", hash = "sha256:d3810299d331fc1031c8a2a9886f1f0e0cc2f14ddad284d337174324b1c83e92", size = 509219874, upload-time = "2026-02-05T00:18:30.377Z" },
+    { url = "https://wheels.vllm.ai/1892993bc18e243e2c05841314c5e9c06a80c70d/vllm-0.15.1%2Bcu130-cp38-abi3-manylinux_2_35_aarch64.whl" },
+    { url = "https://wheels.vllm.ai/1892993bc18e243e2c05841314c5e9c06a80c70d/vllm-0.15.1%2Bcu130-cp38-abi3-manylinux_2_35_x86_64.whl" },
 ]
 
 [[package]]
