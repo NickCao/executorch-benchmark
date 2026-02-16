@@ -1,7 +1,6 @@
 import executorch.extension.pybindings._portable_lib  # noqa: F401
 from asyncio import to_thread, Queue, QueueShutDown, create_task, Semaphore
-from executorch.extension.llm.runner import GenerationConfig
-from executorch.extension.llm.runner._llm_runner import TextLLMRunner
+from executorch.extension.llm.runner import TextLLMRunner, GenerationConfig
 from transformers import AutoProcessor
 from http import HTTPStatus
 from fastapi import FastAPI, Depends, Request
