@@ -77,7 +77,7 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
 
         def generate():
             runner.generate(
-                inputs=request.prompt,
+                prompt=request.prompt,
                 config=config,
                 token_callback=queue.put_nowait,
             )
