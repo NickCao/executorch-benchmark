@@ -1,6 +1,7 @@
 import executorch.extension.pybindings._portable_lib  # noqa: F401
 from asyncio import to_thread, Queue, QueueShutDown, create_task, Semaphore
-from executorch.extension.llm.runner import MultimodalRunner, GenerationConfig
+from executorch.extension.llm.runner import GenerationConfig
+from executorch.extension.llm.runner._llm_runner import TextLLMRunner
 from transformers import AutoProcessor
 from http import HTTPStatus
 from fastapi import FastAPI, Depends, Request
@@ -20,12 +21,11 @@ from vllm.entrypoints.openai.engine.protocol import (
 )
 
 
-processor = AutoProcessor.from_pretrained("google/gemma-3-4b-it")
+processor = AutoProcessor.from_pretrained("Qwen/Qwen3-0.6B")
 
-runner = MultimodalRunner(
-    model_path="models/gemma-3-4b-it/model.pte",
-    data_path="models/gemma-3-4b-it/aoti_cuda_blob.ptd",
-    tokenizer_path="models/gemma-3-4b-it/tokenizer.json",
+runner = TextLLMRunner(
+    model_path="models/qwen3-0.6b/model.pte",
+    tokenizer_path="models/qwen3-0.6b/tokenizer.json",
 )
 
 sem = Semaphore(1)
@@ -45,9 +45,9 @@ async def show_available_models(raw_request: Request):
         content=ModelList(
             data=[
                 ModelCard(
-                    id="google/gemma-3-4b-it",
+                    id="Qwen/Qwen3-0.6B",
                     max_model_len=2**16,
-                    root="google/gemma-3-4b-it",
+                    root="Qwen/Qwen3-0.6B",
                     permission=[ModelPermission()],
                 )
             ]
@@ -69,12 +69,6 @@ async def show_available_models(raw_request: Request):
 async def create_completion(request: CompletionRequest, raw_request: Request):
     async def dummy():
         await sem.acquire()
-        inputs_hf = processor(
-            images=None,
-            text=request.prompt,
-            return_tensors="pt",
-        )
-
         config = GenerationConfig(
             max_new_tokens=request.max_tokens,
             temperature=0.7,
@@ -84,7 +78,7 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
 
         def generate():
             runner.generate_hf(
-                inputs=inputs_hf,
+                inputs=request.prompt,
                 config=config,
                 token_callback=queue.put_nowait,
             )
@@ -98,7 +92,7 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
                 text = await queue.get()
                 choice_data = CompletionResponseStreamChoice(index=0, text=text)
                 chunk = CompletionStreamResponse(
-                    model="google/gemma-3-4b-it",
+                    model="Qwen/Qwen3-0.6B",
                     choices=[choice_data],
                 )
                 response_json = chunk.model_dump_json(exclude_unset=False)
