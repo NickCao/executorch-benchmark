@@ -1,6 +1,7 @@
 [submodule "thirdparty/executorch"]
 	path = thirdparty/executorch
-	url = https://github.com/pytorch/executorch.git
+	url = https://github.com/NickCao/executorch.git
+	branch = text-llm-runner
 [submodule "thirdparty/optimum-executorch"]
 	path = thirdparty/optimum-executorch
 	url = https://github.com/huggingface/optimum-executorch.git
