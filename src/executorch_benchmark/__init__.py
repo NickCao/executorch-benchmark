@@ -76,7 +76,7 @@ async def create_completion(request: CompletionRequest, raw_request: Request):
         queue = Queue(1024)
 
         def generate():
-            runner.generate_hf(
+            runner.generate(
                 inputs=request.prompt,
                 config=config,
                 token_callback=queue.put_nowait,
